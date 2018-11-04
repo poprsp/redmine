@@ -1,0 +1,15 @@
+production:
+  adapter: postgresql
+  database: redmine
+  host: db-production
+  username: postgres
+  password: ""
+  encoding: utf8
+
+development:
+  adapter: postgresql
+  database: redmine_development
+  host: db-development
+  username: postgres
+  password: ""
+  encoding: utf8
