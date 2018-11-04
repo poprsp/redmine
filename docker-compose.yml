@@ -12,8 +12,6 @@ services:
       - db-production
     volumes:
       - .:/redmine
-    ports:
-      - '8080:3000'
     environment:
       SECRET_KEY_BASE: 31e7c6400f7af1dd4faab7f10f6ff38f71bf9a34
     command: ["./bin/wait-for-it", "db-production:5432", "--", "./bin/run"]
@@ -28,6 +26,17 @@ services:
       - '5432:5432'
     environment:
       POSTGRES_DB: redmine
+
+  # Create an Nginx container with read-only access to its configuration
+  # file.
+  nginx-production:
+    image: nginx:1.14.0
+    depends_on:
+      - redmine-production
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - '80:80'
 
 # Persistent volume for the DB
 volumes:
