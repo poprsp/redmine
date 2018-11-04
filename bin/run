@@ -8,11 +8,8 @@
 # until after the Redmine container has been built.
 INITIALIZED="/redmine.initialized"
 if [[ ! -f $INITIALIZED ]]; then
-    echo "Generate secret token"
-    bundle exec rake generate_secret_token
-
     echo "Setup database"
-    bundle exec rake db:migrate RAILS_ENV="development"
+    bundle exec rake db:migrate RAILS_ENV="production"
     touch "$INITIALIZED"
 fi
 
@@ -21,5 +18,9 @@ fi
 echo "Remove stale pid file"
 rm -f /redmine/tmp/pids/server.pid
 
+# Pre-compile static assets
+echo "Precompiling assets"
+rake assets:precompile RAILS_ENV=production
+
 echo "Run server"
-ruby ./bin/rails server -e development -b 0.0.0.0
+ruby ./bin/rails server -e production -b 0.0.0.0

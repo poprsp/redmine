@@ -6,27 +6,29 @@ services:
   # exception if it can't connect to the DB.
   #
   # [1] https://github.com/vishnubob/wait-for-it
-  redmine-development:
+  redmine-production:
     build: .
     depends_on:
-      - db-development
+      - db-production
     volumes:
       - .:/redmine
     ports:
       - '8080:3000'
-    command: ["./bin/wait-for-it", "db-development:5432", "--", "./bin/run"]
+    environment:
+      SECRET_KEY_BASE: 31e7c6400f7af1dd4faab7f10f6ff38f71bf9a34
+    command: ["./bin/wait-for-it", "db-production:5432", "--", "./bin/run"]
 
   # Create a PostgreSQL container with a default DB named
-  # 'redmine_development'.
-  db-development:
+  # 'redmine_production'.
+  db-production:
     image: postgres:11.0
     volumes:
-      - db-development:/var/lib/postgresql/data
+      - db-production:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_DB: redmine_development
+      POSTGRES_DB: redmine
 
 # Persistent volume for the DB
 volumes:
-  db-development:
+  db-production:
