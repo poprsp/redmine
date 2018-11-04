@@ -1,0 +1,32 @@
+version: '3'
+services:
+  # Build a container for Redmine that depends on the DB container.
+  # The wait-for-it [1] script is used to wait for the DB container to
+  # start before launching Rails -- otherwise Rails will throw an
+  # exception if it can't connect to the DB.
+  #
+  # [1] https://github.com/vishnubob/wait-for-it
+  redmine-development:
+    build: .
+    depends_on:
+      - db-development
+    volumes:
+      - .:/redmine
+    ports:
+      - '8080:3000'
+    command: ["./bin/wait-for-it", "db-development:5432", "--", "./bin/run"]
+
+  # Create a PostgreSQL container with a default DB named
+  # 'redmine_development'.
+  db-development:
+    image: postgres:11.0
+    volumes:
+      - db-development:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: redmine_development
+
+# Persistent volume for the DB
+volumes:
+  db-development:

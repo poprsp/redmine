@@ -1,0 +1,22 @@
+#!/bin/bash
+#
+# This is kind of an ugly hack.  The database container won't be running
+# when the Redmine container is being built, so the database structure
+# can't be created at that point.
+#
+# This script works around that fact by not running the DB migration
+# until after the Redmine container has been built.
+INITIALIZED="/redmine.initialized"
+if [[ ! -f $INITIALIZED ]]; then
+    echo "Setup database"
+    bundle exec rake db:migrate RAILS_ENV="development"
+    touch "$INITIALIZED"
+fi
+
+# Another issue is that stale pid-files may linger around, which causes
+# Rails to abort.
+echo "Remove stale pid file"
+rm -f /redmine/tmp/pids/server.pid
+
+echo "Run server"
+ruby ./bin/rails server -e development -b 0.0.0.0
