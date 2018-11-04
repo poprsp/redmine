@@ -8,6 +8,9 @@
 # until after the Redmine container has been built.
 INITIALIZED="/redmine.initialized"
 if [[ ! -f $INITIALIZED ]]; then
+    echo "Generate secret token"
+    bundle exec rake generate_secret_token
+
     echo "Setup database"
     bundle exec rake db:migrate RAILS_ENV="development"
     touch "$INITIALIZED"

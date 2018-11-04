@@ -31,11 +31,3 @@ COPY Gemfile Gemfile
 # Setup Redmine
 COPY . .
 RUN bundle install
-
-# Generate session secret.  Without setting RAILS_ENV to production, no
-# secret will be generated (or, at least rails won't be able to find
-# it).
-#
-# There's probably a better solution, but this seems to work.  I found
-# this solution on StackOverflow.
-RUN RAILS_ENV=production bundle exec rake generate_secret_token
