@@ -1,7 +1,7 @@
 production:
   adapter: postgresql
   database: redmine
-  host: db-production
+  host: db
   username: postgres
   password: ""
   encoding: utf8
