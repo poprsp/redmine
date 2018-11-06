@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# bail on errors
+set -o errexit
+set -o pipefail
+
+if [[ $# -ne 6 ]]; then
+    echo "ERROR: $0 <host> <user> <password> <name> <Dockerfile> <version>"
+fi
+host="$1"
+username="$2"
+password="$3"
+name="$4"
+dockerfile="$5"
+version="$6"
+
+# Login to the registry
+docker login -u "$username" -p "$password" "$host"
+
+# Build the image
+id=$(docker image build -f "$dockerfile" . \
+            | grep ^"Successfully built " |cut -d" " -f3)
+
+# Tag the image
+docker tag "$id" "${host}/${name}:${version}"
+
+# Ship the image
+docker push "${host}/${name}:${version}"
