@@ -14,6 +14,9 @@ RUN apk add --update imagemagick6-dev
 # The PostgreSQL gem needs the header files and library for postgres
 RUN apk add --update postgresql-dev
 
+# PostgreSQL client is needed for our startup logic to initialize the DB
+RUN apk add --update postgresql-client
+
 # tzdata is needed to run the server
 RUN apk add --update tzdata
 

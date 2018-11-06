@@ -6,11 +6,10 @@
 #
 # This script works around that fact by not running the DB migration
 # until after the Redmine container has been built.
-INITIALIZED="/redmine.initialized"
-if [[ ! -f $INITIALIZED ]]; then
+query="SELECT COUNT(*) FROM users;"
+if ! psql -h db -U postgres -d redmine -c "$query" >/dev/null 2>&1; then
     echo "Setup database"
     bundle exec rake db:migrate RAILS_ENV="production"
-    touch "$INITIALIZED"
 fi
 
 # Another issue is that stale pid-files may linger around, which causes
