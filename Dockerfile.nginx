@@ -1,0 +1,11 @@
+# Use the latest stable version of nginx
+FROM nginx:1.14.0
+
+# Copy nginx config files to the image
+COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy certificates to the image
+COPY nginx/ssl /etc/nginx/ssl
+
+# Copy the wait-for-it binary to the image
+COPY bin/wait-for-it /usr/local/bin/wait-for-it
